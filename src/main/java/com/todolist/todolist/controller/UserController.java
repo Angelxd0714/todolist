@@ -22,13 +22,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<UserEntity> findAll() {
         return (List<UserEntity>) userService.getAllUser();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> findById(Integer id) {
+    public ResponseEntity<UserEntity> findById(@PathVariable long id) {
         UserEntity user = userService.getUser(id);
         return ResponseEntity.ok(user);
     }
@@ -36,6 +36,7 @@ public class UserController {
     @PostMapping
     public void add(@RequestBody UserEntity userEntity) {
         userService.addUser(userEntity);
+        
     }
 
     @DeleteMapping("/{id}")

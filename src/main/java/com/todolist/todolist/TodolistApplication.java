@@ -1,10 +1,13 @@
 package com.todolist.todolist;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.Set;
 import com.todolist.todolist.entity.PermissionsEntity;
 import com.todolist.todolist.entity.RolEntity;
@@ -17,7 +20,8 @@ import com.todolist.todolist.repository.UserRepository;
 
 @SpringBootApplication
 public class TodolistApplication {
-
+    @Autowired
+	private PasswordEncoder passwordEncoder;
 	public static void main(String[] args) {
 		SpringApplication.run(TodolistApplication.class, args);
 	}
@@ -30,7 +34,8 @@ public class TodolistApplication {
 			PermissionsEntity delete = PermissionsEntity.builder().name(PermissionEnum.DELETE).build();
 			permissionRepository.saveAll(Set.of(post, get, put, delete));
 			RolEntity admin = RolEntity.builder().rolName(RolesEnum.ADMIN).permissions(Set.of(post,get,put,delete)).build();
-			UserEntity userAdmin = UserEntity.builder().username("admin").password("1234").enabled(true).accountNonExpired(false).accountNonLocked(true).credentialsNonExpired(false).rol(Set.of(admin)).build();
+			String passWordencode = passwordEncoder.encode("1234");
+			UserEntity userAdmin = UserEntity.builder().username("admin").password(passWordencode).enabled(true).accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).rol(Set.of(admin)).build();
 			rolRepository.save(admin);
 			userRepository.save(userAdmin);
 		};

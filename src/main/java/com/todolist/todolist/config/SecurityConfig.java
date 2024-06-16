@@ -29,23 +29,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> {
-                    authorize
-                            .requestMatchers(HttpMethod.GET, "/tasks/**")
-                            .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST")
-                            .requestMatchers(HttpMethod.GET, "/tasks/{id}")
-                            .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_GUEST")
-                            .requestMatchers(HttpMethod.POST, "/tasks/").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                            .requestMatchers(HttpMethod.PUT, "/tasks/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                            .requestMatchers(HttpMethod.DELETE, "/tasks/{id}")
-                            .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                            .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ADMIN", "USER")
-                            .requestMatchers(HttpMethod.GET, "/users").hasAnyAuthority("ADMIN", "USER")
-                            .requestMatchers(HttpMethod.POST, "/users").hasAnyAuthority("ADMIN", "USER")
-                            .requestMatchers(HttpMethod.PUT, "/users/**").hasAnyAuthority("ADMIN", "USER")
-                            .requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyAuthority("ADMIN", "USER")
-                            .anyRequest().denyAll();
-                })
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/users").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.PUT, "/users/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/tasks/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/tasks").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.PUT, "/tasks/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET,"/roles/**").hasAnyAuthority("ADMIN","USER")
+                        .requestMatchers(HttpMethod.POST, "/roles").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/roles/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/roles/**").hasAnyAuthority("ADMIN")
+                        .anyRequest().denyAll())
+                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(accessDeniedHandlers()))
 
                 .build();
     }
@@ -59,13 +57,18 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetailsServiceImpl) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         return authenticationProvider;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AccessDeniedHandlers accessDeniedHandlers() {
+        return new AccessDeniedHandlers();
     }
 }
