@@ -17,5 +17,5 @@ Esta es una aplicación básica de Spring Boot que incluye autenticación y auto
 Primero, clona el repositorio a tu máquina local:
 
 ```bash
-git clone https://github.com/tu_usuario/tu_repositorio.git
-cd tu_repositorio
+git clone https://github.com/Angelxd0714/todolist.git
+cd todolist
