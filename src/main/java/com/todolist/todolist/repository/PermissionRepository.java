@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.todolist.todolist.entity.PermissionsEntity;
 
 public interface PermissionRepository extends CrudRepository<PermissionsEntity,Long> {
-    
+   PermissionsEntity findByName(String name); 
 }
