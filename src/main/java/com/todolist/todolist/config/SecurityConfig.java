@@ -12,12 +12,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 import com.todolist.todolist.services.UserDetailsServiceImpl;
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +33,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/users").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasAnyAuthority("ADMIN", "USER")
@@ -38,13 +42,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/tasks").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.PUT, "/tasks/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET,"/roles/**").hasAnyAuthority("ADMIN","USER")
+                        .requestMatchers(HttpMethod.GET, "/roles/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/roles").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/roles/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/roles/**").hasAnyAuthority("ADMIN")
                         .anyRequest().denyAll())
+                        
+                        
                 .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(accessDeniedHandlers()))
-
+                 
                 .build();
     }
 
@@ -53,6 +59,7 @@ public class SecurityConfig {
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+   
 
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetailsServiceImpl) {
@@ -70,5 +77,19 @@ public class SecurityConfig {
     @Bean
     public AccessDeniedHandlers accessDeniedHandlers() {
         return new AccessDeniedHandlers();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsRegistry() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:5173/").allowedMethods("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("Authorization", "Cache-Control", "Content-Type")
+                        .allowCredentials(true);
+            }
+        };
+
     }
 }
