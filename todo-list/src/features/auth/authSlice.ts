@@ -27,12 +27,12 @@ const authSlice = createSlice({
 export const { setAuth, logout } = authSlice.actions;
 export const login = (username: string, password: string) => async (dispatch: AppDispatch) => {
     try {
-        const res = await conexion({username,password})
-        localStorage.setItem('user', res.data)
-        localStorage.setItem('isAuhtenticated', "true")
-        dispatch(setAuth({ isAuthenticated: true, user: res.data }));
+        const res = await conexion({ username, password })
+        console.log(res)
+        dispatch(setAuth({ isAuthenticated: true, user: res }));
     } catch (error) {
-        console.log(error)
+        dispatch(setAuth({ isAuthenticated: false, user: error }));
+     
     }
 }
 export default authSlice.reducer;

@@ -1,5 +1,9 @@
+import { TableUsuarios } from "../layout/Table"
+
 export const Usuarios = () => {
     return (
-        <div>Usuarios</div>
+        <>
+       <TableUsuarios></TableUsuarios> 
+        </>
     )
 }

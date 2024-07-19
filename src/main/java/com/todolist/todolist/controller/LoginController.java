@@ -28,7 +28,7 @@ public class LoginController {
          SecurityContextHolder.getContext().setAuthentication(authentication);
          return ResponseEntity.ok("ok");
       } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("401");
       }
 
    }
