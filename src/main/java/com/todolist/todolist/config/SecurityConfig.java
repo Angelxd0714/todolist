@@ -31,7 +31,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret").tokenValiditySeconds(86400))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ADMIN")
@@ -46,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/roles").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/roles/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/roles/**").hasAnyAuthority("ADMIN")
-                        .anyRequest().denyAll())
+                        .anyRequest().authenticated())
                         
                         
                 .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(accessDeniedHandlers()))
