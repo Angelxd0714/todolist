@@ -25,6 +25,7 @@ export const dataUserGet:any = createAsyncThunk<Users[]>('auth/dataUserGet', asy
         headers:{
         'Content-Type':'application/json'
     }});
+    console.log(response.data)
     return response.data;
   });
 

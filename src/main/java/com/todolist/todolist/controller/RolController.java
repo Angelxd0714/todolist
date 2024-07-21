@@ -2,6 +2,7 @@ package com.todolist.todolist.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.todolist.todolist.entity.RolEntity;
 import com.todolist.todolist.services.RolServices;
 import java.util.List;
+@CrossOrigin
 @RestController
 @RequestMapping("/roles")
 public class RolController {

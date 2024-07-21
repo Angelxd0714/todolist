@@ -16,13 +16,13 @@ import { RootState } from './features/store';
 
 function App() {
  
-  const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user);
+  const error = useSelector((state: RootState) => state.auth.user);
+  console.log(error);
   useEffect(()=>{
-      if(user==false){
+      if(error?.message=="Request failed with status code 401"){
    
       }
-  },[user])
+  },[error])
   return (
     <>
     <BrowserRouter>
@@ -30,7 +30,7 @@ function App() {
         <div className='col-span-4 w-full h-full'>
           <MeNavbar />
         </div>
-          {user && <AlertError message="Error al logearse"></AlertError>}
+          {error && <AlertError message={error?.message}></AlertError>}
         <div className='col-span-4 flex items-center justify-center min-h-screen flex-col my-auto text-blue-700'>
 
           
